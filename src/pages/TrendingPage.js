@@ -1,9 +1,28 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import MovieList from '../components/MovieList/MovieList';
+import Api from '../utils/api';
+import { Notify } from 'notiflix';
 
 export default function TrendingPage() {
+  const [trendingList, setTrendingList] = useState([]);
+
+  // Fetch trending movies
+  useEffect(() => {
+    const fetchMovies = async () => {
+      try {
+        const list = await Api.fetchMoviesTrending();
+
+        setTrendingList(list.results);
+      } catch (e) {
+        Notify.failure(`Fetch error. Code: ${e.response.code}`);
+      }
+    };
+
+    fetchMovies();
+  }, []);
+
   return (<div>
     <h2>Trending page</h2>
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facere,
-      quisquam!</p>
+    <MovieList movies={trendingList} />
   </div>);
 }

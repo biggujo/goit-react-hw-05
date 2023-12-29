@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { lazy } from 'react';
 import TrendingPage from '../../pages/TrendingPage';
 
@@ -13,6 +13,7 @@ export const App = () => {
         <Route path='cast' element={<p>Cast</p>} />
         <Route path='reviews' element={<p>Cast</p>} />
       </Route>
+      <Route path='*' element={<Navigate to='/' />} />
     </Route>
   </Routes>);
 };

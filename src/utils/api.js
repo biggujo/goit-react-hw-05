@@ -3,32 +3,40 @@ import axios from 'axios';
 axios.defaults.baseURL = 'https://api.themoviedb.org/3';
 axios.defaults.headers.common['Authorization'] = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2NDdmZTU4ZWJkMjMzZDY5Y2VlN2RjYTQ2ZWYwOGFlNiIsInN1YiI6IjY0YWE4Yzk0M2UyZWM4MDEyZWUzOWM2OSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.JlMf1XMEtVXHat5MkCciJRlAPG65by9hu8CeaKn8o0o';
 
-export const fetchMoviesTrending = async () => {
+const fetchMoviesTrending = async () => {
   const response = await axios.get('/trending/all/day');
 
   return response.data;
 };
 
-export const fetchMoviesByQuery = async (query = '') => {
+const fetchMoviesByQuery = async (query = '') => {
   const response = await axios.get(`/search/movie?query=${query}`);
 
   return response.data;
 };
 
-export const fetchMovieDetailsById = async (id = '') => {
+const fetchMovieDetailsById = async (id = '') => {
   const response = await axios.get(`/movie/${id}`);
 
   return response.data;
 };
 
-export const fetchMovieCreditsById = async (id = '') => {
+const fetchMovieCreditsById = async (id = '') => {
   const response = await axios.get(`/movie/${id}/credits`);
 
   return response.data;
 };
 
-export const fetchMovieReviewsById = async (id = '') => {
+const fetchMovieReviewsById = async (id = '') => {
   const response = await axios.get(`/movie/${id}/reviews`);
 
   return response.data;
+};
+
+export default {
+  fetchMoviesTrending,
+  fetchMoviesByQuery,
+  fetchMovieDetailsById,
+  fetchMovieCreditsById,
+  fetchMovieReviewsById,
 };
