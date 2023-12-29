@@ -4,10 +4,12 @@ import Header from '../Header/Header';
 import Container from '../Container/Container';
 
 export default function Layout() {
-  return (<div>
+  return (<>
     <Header />
     <Container>
-      <Outlet />
+      <main>
+        <Outlet />
+      </main>
     </Container>
-  </div>);
+  </>);
 }

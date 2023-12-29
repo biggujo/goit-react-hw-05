@@ -5,6 +5,7 @@ import { Notify } from 'notiflix';
 
 export default function TrendingPage() {
   const [trendingList, setTrendingList] = useState([]);
+  const [isError, setIsError] = useState(false);
 
   // Fetch trending movies
   useEffect(() => {

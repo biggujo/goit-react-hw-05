@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import MovieItem from '../MovieItem/MovieItem';
-import { ListItemStyled } from './MovieList.styled';
+import { ListItemStyled } from '../ListItem/ListItem.styled';
 
 export default function MovieList({ movies }) {
   return (<ul>
@@ -10,7 +10,8 @@ export default function MovieList({ movies }) {
       name,
       title,
     }) => <ListItemStyled key={id}>
-      <MovieItem id={id} name={name === undefined ? title : name} />
+      <MovieItem id={id}
+                 name={name === undefined ? title : name} />
     </ListItemStyled>)}
   </ul>);
 }
