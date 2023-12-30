@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import MovieList from '../components/MovieList/MovieList';
-import Api from '../utils/api';
 import { Notify } from 'notiflix';
+import MovieList from '../components/MovieList/MovieList';
 import LoadingFallback from '../components/LoadingFallback/LoadingFallback';
 import ErrorFallback from '../components/ErrorFallback/ErrorFallback';
 import { Status } from '../utils/status';
+import Api from '../utils/api';
 
 export default function TrendingPage() {
   const [trendingList, setTrendingList] = useState(null);
@@ -17,7 +17,6 @@ export default function TrendingPage() {
 
     const fetchMovies = async () => {
       setStatus(Status.PENDING);
-      console.log('Pending!');
 
       try {
         const list = await Api.fetchMoviesTrending(controller);

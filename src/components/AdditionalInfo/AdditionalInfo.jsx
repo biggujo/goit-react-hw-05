@@ -1,7 +1,7 @@
 import React from 'react';
-import { ListItemStyled } from '../ListItem/ListItem.styled';
 import { Link } from 'react-router-dom';
 import { WrapperStyled } from './AdditionalInfo.styled';
+import { ListItemStyled } from '../ListItem/ListItem.styled';
 
 export default function AdditionalInfo() {
   return (<WrapperStyled>

@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link, useLocation, useParams } from 'react-router-dom';
-import Api from '../utils/api';
+import { useLocation, useParams } from 'react-router-dom';
+import { IoMdArrowBack } from 'react-icons/io';
 import { Notify } from 'notiflix';
 import MovieInfo from '../components/MovieInfo/MovieInfo';
 import LoadingFallback from '../components/LoadingFallback/LoadingFallback';
 import ErrorFallback from '../components/ErrorFallback/ErrorFallback';
-import { IoMdArrowBack } from 'react-icons/io';
 import { GoBackLinkStyled } from '../components/GoBackLink/GoBackLink.styled';
+import Api from '../utils/api';
 import { Status } from '../utils/status';
 
 export default function MovieDetailsPage() {
@@ -44,7 +44,7 @@ export default function MovieDetailsPage() {
     return () => {
       controller.abort();
     };
-  }, []);
+  }, [movieId]);
 
   return (<>
     <GoBackLinkStyled to={backLinkLocation.current}><IoMdArrowBack /> Go

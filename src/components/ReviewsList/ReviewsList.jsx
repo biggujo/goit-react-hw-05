@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import Api from '../../utils/api';
 import { Notify } from 'notiflix';
 import ReviewsItem from '../ReviewsItem/ReviewsItem';
 import LoadingFallback from '../LoadingFallback/LoadingFallback';
 import ErrorFallback from '../ErrorFallback/ErrorFallback';
+import Api from '../../utils/api';
 import { Status } from '../../utils/status';
 
 export default function ReviewsList() {
@@ -45,7 +45,7 @@ export default function ReviewsList() {
     return () => {
       controller.abort();
     };
-  }, []);
+  }, [movieId]);
 
   return (<div>
     {status === Status.PENDING && <LoadingFallback />}

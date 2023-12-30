@@ -1,10 +1,8 @@
-import React, { Suspense, useMemo } from 'react';
-import { post } from 'axios';
+import React, { Suspense } from 'react';
+import { Outlet } from 'react-router-dom';
 import {
-  AdditionalWrapperStyled, GenresListStyled, WrapperStyled,
+  GenresListStyled, WrapperStyled,
 } from './MovieInfo.styled';
-import { Link, Outlet } from 'react-router-dom';
-import { ListItemStyled } from '../ListItem/ListItem.styled';
 import AdditionalInfo from '../AdditionalInfo/AdditionalInfo';
 import LoadingFallback from '../LoadingFallback/LoadingFallback';
 

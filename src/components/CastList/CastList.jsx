@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
-import Api from '../../utils/api';
+import { useParams } from 'react-router-dom';
 import { Notify } from 'notiflix';
 import { ListItemStyled } from '../ListItem/ListItem.styled';
 import CastItem from '../CastItem/CastItem';
 import LoadingFallback from '../LoadingFallback/LoadingFallback';
 import ErrorFallback from '../ErrorFallback/ErrorFallback';
+import Api from '../../utils/api';
 import { Status } from '../../utils/status';
 
 export default function CastList() {
@@ -20,7 +20,7 @@ export default function CastList() {
       try {
         setStatus(Status.PENDING);
         const cast = await Api.fetchMovieCreditsById(movieId, controller);
-        
+
         setCastList(cast.cast);
         setStatus(() => Status.RESOLVED);
       } catch (e) {
@@ -39,7 +39,7 @@ export default function CastList() {
     return () => {
       controller.abort();
     };
-  }, []);
+  }, [movieId]);
 
   return (<div>
     {status === Status.PENDING && <LoadingFallback />}

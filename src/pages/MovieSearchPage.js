@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import SearchForm from '../components/SearchForm/SearchForm';
 import { useSearchParams } from 'react-router-dom';
-import Api from '../utils/api';
 import { Notify } from 'notiflix';
+import SearchForm from '../components/SearchForm/SearchForm';
 import LoadingFallback from '../components/LoadingFallback/LoadingFallback';
 import ErrorFallback from '../components/ErrorFallback/ErrorFallback';
 import MovieList from '../components/MovieList/MovieList';
+import Api from '../utils/api';
 import { Status } from '../utils/status';
 
 const QUERY_KEY = 'query';
@@ -14,7 +14,7 @@ export default function MovieSearchPage() {
   const [resultsList, setResultsList] = useState(null);
   const [status, setStatus] = useState(Status.IDLE);
   const [error, setError] = useState(null);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const query = searchParams.get(QUERY_KEY) ?? '';
 
   useEffect(() => {

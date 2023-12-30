@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import MovieItem from '../MovieItem/MovieItem';
 import { ListItemStyled } from '../ListItem/ListItem.styled';
-import { useLocation } from 'react-router-dom';
 
 export default function MovieList({ movies }) {
   return (<ul>

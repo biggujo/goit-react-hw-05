@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-export default function SearchForm({ queryKey }) {
+export default function SearchForm() {
   const [currentQueryValue, setCurrentQueryValue] = useState('');
   const [searchParams, setSearchParams] = useSearchParams();
   const queryParam = searchParams.get('query') ?? '';
 
   useEffect(() => {
     setCurrentQueryValue(queryParam);
-  }, []);
+  }, [queryParam]);
 
   const handleQueryValueChange = (newValue) => {
     setCurrentQueryValue(newValue);

@@ -63,10 +63,12 @@ const fetchMovieReviewsById = async (id = '', abortController) => {
   return response.data;
 };
 
-export default {
+const api = {
   fetchMoviesTrending,
   fetchMoviesByQuery,
   fetchMovieDetailsById,
   fetchMovieCreditsById,
   fetchMovieReviewsById,
 };
+
+export default api;
