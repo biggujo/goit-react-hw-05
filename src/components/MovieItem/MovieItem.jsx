@@ -1,12 +1,14 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 export default function MovieItem({
   id,
   name,
 }) {
-  return (<Link to={`/movies/${id}`}>
+  const location = useLocation();
+
+  return (<Link to={`/movies/${id}`} state={{ from: location }}>
     {name}
   </Link>);
 }

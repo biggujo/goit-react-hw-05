@@ -21,6 +21,7 @@ export const HeaderStyled = styled('header')`
   width: 100vw;
   max-width: 100%;
   height: 80px;
+  margin-bottom: 20px;
 
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 `;
