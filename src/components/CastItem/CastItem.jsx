@@ -10,9 +10,11 @@ export default function CastItem({
   },
 }) {
   return (<div>
-    <img src={`https://image.tmdb.org/t/p/w200/${profile_path}`}
-         alt={`A photo of ${original_name}`}
-         width='80' />
+    {profile_path &&
+      <img src={`https://image.tmdb.org/t/p/w200/${profile_path}`}
+           alt={`A photo of ${original_name}`}
+           width='80' />}
+    {!profile_path && <p>No photo</p>}
     <p>{original_name}</p>
     <p>Character: {character}</p>
   </div>);
