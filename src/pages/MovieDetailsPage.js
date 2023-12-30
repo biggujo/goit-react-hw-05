@@ -25,6 +25,8 @@ export default function MovieDetailsPage() {
   const backLinkLocation = useRef(location.state?.from ?? '/movies');
 
   useEffect(() => {
+    const controller = new AbortController();
+
     const fetchMovie = async () => {
       statusSetPending();
       try {
@@ -33,6 +35,10 @@ export default function MovieDetailsPage() {
         setMovieInfo(info);
         statusSetResolved();
       } catch (e) {
+        if (e.code === 'ERR_CANCELED') {
+          return;
+        }
+
         Notify.failure(`Fetch error. Code: ${e.request.status}`);
         setError(e.request.status);
         statusSetRejected();
@@ -40,6 +46,10 @@ export default function MovieDetailsPage() {
     };
 
     fetchMovie();
+
+    return () => {
+      controller.abort();
+    };
   }, []);
 
   return (<>

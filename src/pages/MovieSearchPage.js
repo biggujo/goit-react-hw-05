@@ -7,6 +7,9 @@ import { Status, useStatus } from '../hooks/useStatus';
 import LoadingFallback from '../components/LoadingFallback/LoadingFallback';
 import ErrorFallback from '../components/ErrorFallback/ErrorFallback';
 import MovieList from '../components/MovieList/MovieList';
+import {
+  isLabelWithInternallyDisabledControl,
+} from '@testing-library/user-event/dist/utils';
 
 const QUERY_KEY = 'query';
 
@@ -28,20 +31,32 @@ export default function MovieSearchPage() {
       return;
     }
 
+    const controller = new AbortController();
+
     const fetchMovies = async () => {
+
       try {
         statusSetPending();
-        const list = await Api.fetchMoviesByQuery(query);
+        const list = await Api.fetchMoviesByQuery(query, controller);
         setResultsList(list.results);
         statusSetResolved();
       } catch (e) {
-        Notify.failure(`Fetch error. Code: ${e.request.status}`);
+        if (e.code === 'ERR_CANCELED') {
+          return;
+        }
+
+        console.log(e);
+        Notify.failure(`Fetch error123. Code: ${e.request.status}`);
         setError(e.request.status);
         statusSetRejected();
       }
     };
 
     fetchMovies();
+
+    return () => {
+      controller.abort();
+    };
   }, [query]);
 
   return (<div>

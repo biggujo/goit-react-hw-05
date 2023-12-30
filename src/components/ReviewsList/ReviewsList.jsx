@@ -15,6 +15,7 @@ export default function ReviewsList() {
     status,
     error,
     setError,
+    statusSetIdle,
     statusSetPending,
     statusSetResolved,
     statusSetRejected,
@@ -22,10 +23,12 @@ export default function ReviewsList() {
 
   // Fetch reviews from the back-end
   useEffect(() => {
+    const controller = new AbortController();
+
     const fetchReviews = async () => {
       try {
         statusSetPending();
-        const reviews = await Api.fetchMovieReviewsById(movieId);
+        const reviews = await Api.fetchMovieReviewsById(movieId, controller);
 
         if (reviews.results.length === 0) {
           setIsEmptyList(true);
@@ -34,6 +37,11 @@ export default function ReviewsList() {
         setReviewsList(reviews.results);
         statusSetResolved();
       } catch (e) {
+        if (e.code === 'ERR_CANCELED') {
+          statusSetIdle();
+          return;
+        }
+
         Notify.failure(`Fetch error. Code: ${e.request.status}`);
         setError(e.request.status);
         statusSetRejected();
@@ -41,6 +49,10 @@ export default function ReviewsList() {
     };
 
     fetchReviews();
+
+    return () => {
+      controller.abort();
+    };
   }, []);
 
   return (<div>

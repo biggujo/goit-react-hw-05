@@ -15,20 +15,28 @@ export default function CastList() {
     status,
     error,
     setError,
+    statusSetIdle,
     statusSetPending,
     statusSetResolved,
     statusSetRejected,
   } = useStatus();
 
   useEffect(() => {
+    const controller = new AbortController();
+
     const fetchCast = async () => {
       try {
         statusSetPending();
-        const cast = await Api.fetchMovieCreditsById(movieId);
+        const cast = await Api.fetchMovieCreditsById(movieId, controller);
 
         setCastList(cast.cast);
         statusSetResolved();
       } catch (e) {
+        if (e.code === 'ERR_CANCELED') {
+          statusSetIdle();
+          return;
+        }
+
         Notify.failure(`Fetch error. Code: ${e.request.status}`);
         setError(e.request.status);
         statusSetRejected();
@@ -36,6 +44,10 @@ export default function CastList() {
     };
 
     fetchCast();
+
+    return () => {
+      controller.abort();
+    };
   }, []);
 
   return (<div>

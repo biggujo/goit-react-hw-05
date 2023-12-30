@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import MovieList from '../components/MovieList/MovieList';
 import Api from '../utils/api';
 import { Notify } from 'notiflix';
@@ -12,6 +12,7 @@ export default function TrendingPage() {
     status,
     error,
     setError,
+    statusSetIdle,
     statusSetPending,
     statusSetResolved,
     statusSetRejected,
@@ -19,14 +20,21 @@ export default function TrendingPage() {
 
   // Fetch trending movies
   useEffect(() => {
+    const controller = new AbortController();
+
     const fetchMovies = async () => {
       statusSetPending();
       try {
-        const list = await Api.fetchMoviesTrending();
+        const list = await Api.fetchMoviesTrending(controller);
 
         setTrendingList(list.results);
         statusSetResolved();
       } catch (e) {
+        if (e.code === 'ERR_CANCELED') {
+          statusSetIdle();
+          return;
+        }
+
         Notify.failure(`Fetch error. Code: ${e.request.status}`);
         setError(e.request.status);
         statusSetRejected();
@@ -34,6 +42,10 @@ export default function TrendingPage() {
     };
 
     fetchMovies();
+
+    return () => {
+      controller.abort();
+    };
   }, []);
 
   return (<div>
