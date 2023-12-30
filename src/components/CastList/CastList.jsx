@@ -1,45 +1,36 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
 import Api from '../../utils/api';
 import { Notify } from 'notiflix';
 import { ListItemStyled } from '../ListItem/ListItem.styled';
 import CastItem from '../CastItem/CastItem';
-import { Status, useStatus } from '../../hooks/useStatus';
 import LoadingFallback from '../LoadingFallback/LoadingFallback';
 import ErrorFallback from '../ErrorFallback/ErrorFallback';
+import { Status } from '../../utils/status';
 
 export default function CastList() {
   const [castList, setCastList] = useState(null);
+  const [status, setStatus] = useState(0);
+  const [error, setError] = useState(null);
   const { movieId } = useParams();
-  const {
-    status,
-    error,
-    setError,
-    statusSetIdle,
-    statusSetPending,
-    statusSetResolved,
-    statusSetRejected,
-  } = useStatus();
 
   useEffect(() => {
     const controller = new AbortController();
-
     const fetchCast = async () => {
       try {
-        statusSetPending();
+        setStatus(Status.PENDING);
         const cast = await Api.fetchMovieCreditsById(movieId, controller);
-
+        
         setCastList(cast.cast);
-        statusSetResolved();
+        setStatus(() => Status.RESOLVED);
       } catch (e) {
         if (e.code === 'ERR_CANCELED') {
-          statusSetIdle();
           return;
         }
 
         Notify.failure(`Fetch error. Code: ${e.request.status}`);
         setError(e.request.status);
-        statusSetRejected();
+        setStatus(() => Status.REJECTED);
       }
     };
 

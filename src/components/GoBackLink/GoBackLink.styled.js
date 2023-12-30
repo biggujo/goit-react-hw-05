@@ -14,12 +14,16 @@ export const GoBackLinkStyled = styled(Link)`
 
   text-decoration: none;
 
+  &:active {
+    color: #000000;
+    background-color: #f08080;
+  }
+
   &:visited {
     color: initial;
   }
 
   &:hover {
-    color: #f08080;
     border: 1px solid #f08080;
   }
 `;

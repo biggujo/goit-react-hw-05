@@ -4,23 +4,17 @@ import Api from '../utils/api';
 import { Notify } from 'notiflix';
 import MovieInfo from '../components/MovieInfo/MovieInfo';
 import LoadingFallback from '../components/LoadingFallback/LoadingFallback';
-import { Status, useStatus } from '../hooks/useStatus';
 import ErrorFallback from '../components/ErrorFallback/ErrorFallback';
 import { IoMdArrowBack } from 'react-icons/io';
 import { GoBackLinkStyled } from '../components/GoBackLink/GoBackLink.styled';
+import { Status } from '../utils/status';
 
 export default function MovieDetailsPage() {
   const [movieInfo, setMovieInfo] = useState(null);
+  const [status, setStatus] = useState(Status.IDLE);
+  const [error, setError] = useState(null);
   const { movieId } = useParams();
   const location = useLocation();
-  const {
-    status,
-    error,
-    setError,
-    statusSetPending,
-    statusSetResolved,
-    statusSetRejected,
-  } = useStatus();
 
   const backLinkLocation = useRef(location.state?.from ?? '/movies');
 
@@ -28,12 +22,12 @@ export default function MovieDetailsPage() {
     const controller = new AbortController();
 
     const fetchMovie = async () => {
-      statusSetPending();
+      setStatus(Status.PENDING);
       try {
         const info = await Api.fetchMovieDetailsById(movieId);
 
         setMovieInfo(info);
-        statusSetResolved();
+        setStatus(Status.RESOLVED);
       } catch (e) {
         if (e.code === 'ERR_CANCELED') {
           return;
@@ -41,7 +35,7 @@ export default function MovieDetailsPage() {
 
         Notify.failure(`Fetch error. Code: ${e.request.status}`);
         setError(e.request.status);
-        statusSetRejected();
+        setStatus(Status.REJECTED);
       }
     };
 

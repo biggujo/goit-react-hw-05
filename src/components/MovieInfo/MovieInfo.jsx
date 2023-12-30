@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { Suspense, useMemo } from 'react';
 import { post } from 'axios';
 import {
   AdditionalWrapperStyled, GenresListStyled, WrapperStyled,
@@ -6,6 +6,7 @@ import {
 import { Link, Outlet } from 'react-router-dom';
 import { ListItemStyled } from '../ListItem/ListItem.styled';
 import AdditionalInfo from '../AdditionalInfo/AdditionalInfo';
+import LoadingFallback from '../LoadingFallback/LoadingFallback';
 
 export default function MovieInfo({
   info: {
@@ -45,6 +46,8 @@ export default function MovieInfo({
       </div>
     </WrapperStyled>
     <AdditionalInfo />
-    <Outlet />
+    <Suspense fallback={<LoadingFallback />}>
+      <Outlet />
+    </Suspense>
   </>);
 }

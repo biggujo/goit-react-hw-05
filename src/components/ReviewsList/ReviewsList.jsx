@@ -3,23 +3,16 @@ import { useParams } from 'react-router-dom';
 import Api from '../../utils/api';
 import { Notify } from 'notiflix';
 import ReviewsItem from '../ReviewsItem/ReviewsItem';
-import { Status, useStatus } from '../../hooks/useStatus';
 import LoadingFallback from '../LoadingFallback/LoadingFallback';
 import ErrorFallback from '../ErrorFallback/ErrorFallback';
+import { Status } from '../../utils/status';
 
 export default function ReviewsList() {
   const [reviewsList, setReviewsList] = useState(null);
   const [isEmptyList, setIsEmptyList] = useState(false);
+  const [status, setStatus] = useState(Status.IDLE);
+  const [error, setError] = useState(null);
   const { movieId } = useParams();
-  const {
-    status,
-    error,
-    setError,
-    statusSetIdle,
-    statusSetPending,
-    statusSetResolved,
-    statusSetRejected,
-  } = useStatus();
 
   // Fetch reviews from the back-end
   useEffect(() => {
@@ -27,7 +20,7 @@ export default function ReviewsList() {
 
     const fetchReviews = async () => {
       try {
-        statusSetPending();
+        setStatus(Status.PENDING);
         const reviews = await Api.fetchMovieReviewsById(movieId, controller);
 
         if (reviews.results.length === 0) {
@@ -35,16 +28,15 @@ export default function ReviewsList() {
         }
 
         setReviewsList(reviews.results);
-        statusSetResolved();
+        setStatus(Status.RESOLVED);
       } catch (e) {
         if (e.code === 'ERR_CANCELED') {
-          statusSetIdle();
           return;
         }
 
         Notify.failure(`Fetch error. Code: ${e.request.status}`);
         setError(e.request.status);
-        statusSetRejected();
+        setStatus(Status.REJECTED);
       }
     };
 

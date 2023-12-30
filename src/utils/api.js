@@ -58,7 +58,6 @@ const fetchMovieReviewsById = async (id = '', abortController) => {
     settings.signal = abortController.signal;
   }
 
-  console.log(settings);
   const response = await axios.get(`/movie/${id}/reviews`, settings);
 
   return response.data;
