@@ -1,35 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import { Notify } from 'notiflix';
-import SearchForm from '../components/SearchForm/SearchForm';
+import MovieList from '../components/MovieList/MovieList';
 import LoadingFallback from '../components/LoadingFallback/LoadingFallback';
 import ErrorFallback from '../components/ErrorFallback/ErrorFallback';
-import MovieList from '../components/MovieList/MovieList';
-import Api from '../utils/api';
 import { Status } from '../utils/status';
+import Api from '../utils/api';
 
-const QUERY_KEY = 'query';
-
-export default function MovieSearchPage() {
-  const [resultsList, setResultsList] = useState(null);
+export default function HomePage() {
+  const [trendingList, setTrendingList] = useState(null);
   const [status, setStatus] = useState(Status.IDLE);
   const [error, setError] = useState(null);
-  const [searchParams] = useSearchParams();
-  const query = searchParams.get(QUERY_KEY) ?? '';
 
+  // Fetch trending movies
   useEffect(() => {
-    if (query === '') {
-      return;
-    }
-
     const controller = new AbortController();
 
     const fetchMovies = async () => {
+      setStatus(Status.PENDING);
 
       try {
-        setStatus(Status.PENDING);
-        const list = await Api.fetchMoviesByQuery(query, controller);
-        setResultsList(list.results);
+        const list = await Api.fetchMoviesTrending(controller);
+
+        setTrendingList(list.results);
         setStatus(Status.RESOLVED);
       } catch (e) {
         if (e.code === 'ERR_CANCELED') {
@@ -47,12 +39,12 @@ export default function MovieSearchPage() {
     return () => {
       controller.abort();
     };
-  }, [query]);
+  }, []);
 
   return (<div>
-    <SearchForm queryKey={QUERY_KEY} />
+    <h2>Trending page</h2>
     {status === Status.PENDING && <LoadingFallback />}
-    {status === Status.RESOLVED && <MovieList movies={resultsList} />}
+    {status === Status.RESOLVED && <MovieList movies={trendingList} />}
     {status === Status.REJECTED && <ErrorFallback error={error} />}
   </div>);
 }

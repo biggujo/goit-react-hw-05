@@ -1,27 +1,35 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Notify } from 'notiflix';
-import MovieList from '../components/MovieList/MovieList';
+import SearchForm from '../components/SearchForm/SearchForm';
 import LoadingFallback from '../components/LoadingFallback/LoadingFallback';
 import ErrorFallback from '../components/ErrorFallback/ErrorFallback';
-import { Status } from '../utils/status';
+import MovieList from '../components/MovieList/MovieList';
 import Api from '../utils/api';
+import { Status } from '../utils/status';
 
-export default function TrendingPage() {
-  const [trendingList, setTrendingList] = useState(null);
+const QUERY_KEY = 'query';
+
+export default function MoviesPage() {
+  const [resultsList, setResultsList] = useState(null);
   const [status, setStatus] = useState(Status.IDLE);
   const [error, setError] = useState(null);
+  const [searchParams] = useSearchParams();
+  const query = searchParams.get(QUERY_KEY) ?? '';
 
-  // Fetch trending movies
   useEffect(() => {
+    if (query === '') {
+      return;
+    }
+
     const controller = new AbortController();
 
     const fetchMovies = async () => {
-      setStatus(Status.PENDING);
 
       try {
-        const list = await Api.fetchMoviesTrending(controller);
-
-        setTrendingList(list.results);
+        setStatus(Status.PENDING);
+        const list = await Api.fetchMoviesByQuery(query, controller);
+        setResultsList(list.results);
         setStatus(Status.RESOLVED);
       } catch (e) {
         if (e.code === 'ERR_CANCELED') {
@@ -39,12 +47,12 @@ export default function TrendingPage() {
     return () => {
       controller.abort();
     };
-  }, []);
+  }, [query]);
 
   return (<div>
-    <h2>Trending page</h2>
+    <SearchForm queryKey={QUERY_KEY} />
     {status === Status.PENDING && <LoadingFallback />}
-    {status === Status.RESOLVED && <MovieList movies={trendingList} />}
+    {status === Status.RESOLVED && <MovieList movies={resultsList} />}
     {status === Status.REJECTED && <ErrorFallback error={error} />}
   </div>);
 }

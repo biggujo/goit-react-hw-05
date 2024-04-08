@@ -1,28 +1,34 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Notify } from 'notiflix';
-import { ListItemStyled } from '../ListItem/ListItem.styled';
-import CastItem from '../CastItem/CastItem';
+import ReviewsItem from '../ReviewsItem/ReviewsItem';
 import LoadingFallback from '../LoadingFallback/LoadingFallback';
 import ErrorFallback from '../ErrorFallback/ErrorFallback';
 import Api from '../../utils/api';
 import { Status } from '../../utils/status';
 
-export default function CastList() {
-  const [castList, setCastList] = useState(null);
-  const [status, setStatus] = useState(0);
+export default function MovieReviews() {
+  const [reviewsList, setReviewsList] = useState(null);
+  const [isEmptyList, setIsEmptyList] = useState(false);
+  const [status, setStatus] = useState(Status.IDLE);
   const [error, setError] = useState(null);
   const { movieId } = useParams();
 
+  // Fetch reviews from the back-end
   useEffect(() => {
     const controller = new AbortController();
-    const fetchCast = async () => {
+
+    const fetchReviews = async () => {
       try {
         setStatus(Status.PENDING);
-        const cast = await Api.fetchMovieCreditsById(movieId, controller);
+        const reviews = await Api.fetchMovieReviewsById(movieId, controller);
 
-        setCastList(cast.cast);
-        setStatus(() => Status.RESOLVED);
+        if (reviews.results.length === 0) {
+          setIsEmptyList(true);
+        }
+
+        setReviewsList(reviews.results);
+        setStatus(Status.RESOLVED);
       } catch (e) {
         if (e.code === 'ERR_CANCELED') {
           return;
@@ -30,11 +36,11 @@ export default function CastList() {
 
         Notify.failure(`Fetch error. Code: ${e.request.status}`);
         setError(e.request.status);
-        setStatus(() => Status.REJECTED);
+        setStatus(Status.REJECTED);
       }
     };
 
-    fetchCast();
+    fetchReviews();
 
     return () => {
       controller.abort();
@@ -43,11 +49,13 @@ export default function CastList() {
 
   return (<div>
     {status === Status.PENDING && <LoadingFallback />}
-    {status === Status.RESOLVED && <ul>
-      {castList.map((cast) => <ListItemStyled key={cast.id}>
-        <CastItem info={cast} />
-      </ListItemStyled>)}
-    </ul>}
+    {status === Status.RESOLVED && isEmptyList &&
+      <p>We don't have any reviews for this movie.</p>}
+    {status === Status.RESOLVED && !isEmptyList &&
+      <ul>{reviewsList.map((reviewData) => <li
+        key={reviewData.id}>
+        <ReviewsItem reviewData={reviewData} />
+      </li>)}</ul>}
     {status === Status.REJECTED && <ErrorFallback error={error} />}
   </div>);
 }

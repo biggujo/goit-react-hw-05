@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import CastList from '../CastList/CastList';
+import MovieCast from '../MovieCast/MovieCast.jsx';
 
 export default function CastItem({
   info: {
@@ -20,7 +20,7 @@ export default function CastItem({
   </div>);
 }
 
-CastList.propTypes = {
+MovieCast.propTypes = {
   info: PropTypes.shape({
     character: PropTypes.string.isRequired,
     original_name: PropTypes.string.isRequired,

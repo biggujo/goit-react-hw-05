@@ -1,20 +1,12 @@
 import React from 'react';
-import { HeaderStyled, NavListStyled, StyledLink } from './Header.styled';
+import { HeaderStyled } from './Header.styled';
 import Container from '../Container/Container';
+import Navigation from '../Navigation/Navigation.jsx';
 
 export default function Header() {
   return (<HeaderStyled>
     <Container>
-      <nav>
-        <NavListStyled>
-          <li>
-            <StyledLink to='/'>Home</StyledLink>
-          </li>
-          <li>
-            <StyledLink to='/movies'>Movies</StyledLink>
-          </li>
-        </NavListStyled>
-      </nav>
+      <Navigation />
     </Container>
   </HeaderStyled>);
 }
